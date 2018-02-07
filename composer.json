@@ -1,0 +1,17 @@
+{
+    "name": "alan/composition",
+    "require": {
+        "zendframework/zend-inputfilter": "^2.8"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^3.4"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-0": {
+            "": "src/"
+        }
+    }
+}
