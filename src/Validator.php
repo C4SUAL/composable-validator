@@ -2,7 +2,11 @@
 
 class Validator
 {
+    const INVALID_KEY_ERROR = "Key '%s' is not permitted";
+
     private $rules;
+
+    private $messages = [];
 
     public function isValid($data)
     {
@@ -17,19 +21,25 @@ class Validator
             if (is_array($value) && isset($this->rules[$key]) && $this->rules[$key] instanceof Validator) {
                 $validator = $this->rules[$key];
                 $valid = $validator->isValid($value);
+                if (!$valid) {
+                    $this->collectMessages($validator->getMessages(), $key);
+                }
                 continue;
             }
 
             if (is_array($value)) {
                 //$validator = clone $this;
                 $valid = $this->isValid($value);
+                if (!$valid) {
+                    $this->collectMessages($this->getMessages(), $key);
+                }
                 continue;
             }
 
             $valid = in_array($key, $this->rules, true);
 
             if (!$valid) {
-                break;
+                $this->addMessage($key);
             }
         }
 
@@ -41,5 +51,20 @@ class Validator
         if (is_array($input)) {
             $this->rules = $input;
         }
+    }
+
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
+    private function addMessage($key)
+    {
+        $this->messages[$key] = sprintf(self::INVALID_KEY_ERROR, $key);
+    }
+
+    private function collectMessages($arr, $key)
+    {
+        $this->messages[$key] = $arr;
     }
 }

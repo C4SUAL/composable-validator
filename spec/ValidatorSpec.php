@@ -98,4 +98,23 @@ class ValidatorSpec extends ObjectBehavior
 
         $this->isValid($input)->shouldReturn(false);
     }
+
+    public function it_collects_invalid_keys()
+    {
+        $this->add([
+            'name',
+            'value'
+        ]);
+
+        $this->isValid([
+            'invalid' => 1,
+            'value' => 2,
+            'mixup' => 3
+        ]);
+
+        $this->getMessages()->shouldReturn([
+            'invalid'=>"Key 'invalid' is not permitted",
+            'mixup'  =>"Key 'mixup' is not permitted"
+        ]);
+    }
 }
