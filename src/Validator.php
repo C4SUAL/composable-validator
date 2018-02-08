@@ -14,7 +14,7 @@ class Validator
             return false;
         }
 
-        $valid = true;
+        $loopValid = true;
 
         foreach($data as $key => $value) {
 
@@ -23,15 +23,17 @@ class Validator
                 $valid = $validator->isValid($value);
                 if (!$valid) {
                     $this->collectMessages($validator->getMessages(), $key);
+                    $loopValid = false;
                 }
                 continue;
             }
 
             if (is_array($value)) {
-                //$validator = clone $this;
-                $valid = $this->isValid($value);
+                $validator = clone $this;
+                $valid = $validator->isValid($value);
                 if (!$valid) {
-                    $this->collectMessages($this->getMessages(), $key);
+                    $this->collectMessages($validator->getMessages(), $key);
+                    $loopValid = false;
                 }
                 continue;
             }
@@ -40,10 +42,11 @@ class Validator
 
             if (!$valid) {
                 $this->addMessage($key);
+                $loopValid = false;
             }
         }
 
-        return $valid;
+        return $loopValid;
     }
 
     public function add($input)

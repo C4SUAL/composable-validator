@@ -117,4 +117,36 @@ class ValidatorSpec extends ObjectBehavior
             'mixup'  =>"Key 'mixup' is not permitted"
         ]);
     }
+
+    public function it_collects_invalid_keys_in_nested_validators()
+    {
+        $meta_fields = new Validator();
+        $meta_fields->add([
+            'name',
+            'value'
+        ]);
+
+        $this->add([
+            'id',
+            'meta_fields' => $meta_fields
+        ]);
+
+        $input = [
+            'id' => 1,
+            'start_date' => '2018-06-29',
+            'meta_fields' => [
+                [ 'foo'  => 'sku',      'value' => 'ABC' ],
+                [ 'name' => 'category', 'value' => 'childrens books' ]
+            ]
+        ];
+
+        $this->isValid($input);
+
+        $this->getMessages()->shouldReturn([
+            'start_date'=>"Key 'start_date' is not permitted",
+            'meta_fields' => [
+                0 => [ 'foo' => "Key 'foo' is not permitted" ]
+            ]
+        ]);
+    }
 }
