@@ -6,6 +6,10 @@ class Validator
 
     public function isValid($data)
     {
+        if (empty($data)) {
+            return false;
+        }
+
         $valid = true;
 
         foreach($data as $key => $value) {

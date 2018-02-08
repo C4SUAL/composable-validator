@@ -8,6 +8,13 @@ use Prophecy\Argument;
 
 class ValidatorSpec extends ObjectBehavior
 {
+    public function it_returns_false_when_given_empty_input()
+    {
+        $this->isValid([])->shouldReturn(false);
+        $this->isValid(null)->shouldReturn(false);
+        $this->isValid('')->shouldReturn(false);
+    }
+
     public function it_allows_you_to_define_the_structure_of_the_input()
     {
         $meta_fields = new Validator();
