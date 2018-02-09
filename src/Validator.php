@@ -27,7 +27,7 @@ class Validator
                 $validator = $this->rules[$key];
                 $valid = $validator->isValid($value);
                 if (!$valid) {
-                    $this->collectMessages($validator->getMessages(), $key);
+                    $this->messages[$key] = $validator->getMessages();
                 }
                 continue;
             }
@@ -36,7 +36,7 @@ class Validator
                 $validator = clone $this;
                 $valid = $validator->isValid($value);
                 if (!$valid) {
-                    $this->collectMessages($validator->getMessages(), $key);
+                    $this->messages[$key] = $validator->getMessages();
                 }
                 continue;
             }
@@ -66,16 +66,6 @@ class Validator
     private function addMessage($key)
     {
         $this->messages[$key] = sprintf(self::INVALID_KEY_ERROR, $key);
-    }
-
-    private function collectMessages($arr, $key)
-    {
-        if (array_key_exists($key, $this->messages)) {
-            // a collection
-            $this->messages[$key][] = $arr;
-        } else {
-            $this->messages[$key] = $arr;
-        }
     }
 
     private function resetMessages()
