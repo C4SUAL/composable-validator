@@ -60,8 +60,8 @@ class ValidatorSpec extends ObjectBehavior
             'id' => 1,
             'start_date' => '2018-06-29',
             'meta_fields' => [
-                [ 'name' => 'sku', 'value' => 'ABC' ],
-                [ 'name' => 'catgeory', 'value' => 'childrens books' ]
+                [ 'name' => 'sku',      'value' => 'ABC' ],
+                [ 'name' => 'category', 'value' => 'books' ]
             ],
             'cookie_period' => 300
         ];
@@ -77,8 +77,8 @@ class ValidatorSpec extends ObjectBehavior
         ]);
 
         $input = [
-            [ 'name' => 'sku', 'value' => 'ABC' ],
-            [ 'name' => 'catgeory', 'value' => 'childrens books' ]
+            [ 'name' => 'sku',      'value' => 'ABC' ],
+            [ 'name' => 'category', 'value' => 'books' ]
         ];
 
         $this->isValid($input)->shouldReturn(true);
@@ -92,8 +92,8 @@ class ValidatorSpec extends ObjectBehavior
         ]);
 
         $input = [
-            [ 'name' => 'sku', 'value' => 'ABC' ],
-            [ 'name' => 'catgeory', 'amount' => 'childrens books' ]
+            [ 'name' => 'sku',      'value' => 'ABC' ],
+            [ 'name' => 'category', 'val'   => 'books' ]
         ];
 
         $this->isValid($input)->shouldReturn(false);
@@ -108,8 +108,8 @@ class ValidatorSpec extends ObjectBehavior
 
         $this->isValid([
             'invalid' => 1,
-            'value' => 2,
-            'mixup' => 3
+            'value'   => 2,
+            'mixup'   => 3
         ]);
 
         $this->getMessages()->shouldReturn([
@@ -135,8 +135,9 @@ class ValidatorSpec extends ObjectBehavior
             'id' => 1,
             'start_date' => '2018-06-29',
             'meta_fields' => [
-                [ 'foo'  => 'sku',      'value' => 'ABC' ],
-                [ 'name' => 'category', 'value' => 'childrens books' ]
+                [ 'foo'  => 1, 'value' => 1 ],
+                [ 'name' => 1, 'value' => 1 ],
+                [ 'bar'  => 1, 'baz'   => 1 ]
             ]
         ];
 
@@ -145,7 +146,11 @@ class ValidatorSpec extends ObjectBehavior
         $this->getMessages()->shouldReturn([
             'start_date'=>"Key 'start_date' is not permitted",
             'meta_fields' => [
-                0 => [ 'foo' => "Key 'foo' is not permitted" ]
+                0 => [ 'foo' => "Key 'foo' is not permitted" ],
+                2 => [
+                    'bar' => "Key 'bar' is not permitted",
+                    'baz' => "Key 'baz' is not permitted",
+                ]
             ]
         ]);
     }
@@ -159,7 +164,7 @@ class ValidatorSpec extends ObjectBehavior
 
         $input = [
             [ 'name1' => 'sku', 'value' => 'ABC' ],
-            [ 'name' => 'catgeory', 'value2' => 'childrens books' ]
+            [ 'name' => 'category', 'value2' => 'books' ]
         ];
 
         $this->isValid($input);
