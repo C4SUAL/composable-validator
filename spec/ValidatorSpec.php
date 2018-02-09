@@ -149,4 +149,24 @@ class ValidatorSpec extends ObjectBehavior
             ]
         ]);
     }
+
+    public function it_collects_invalid_keys_from_a_collection_of_objects()
+    {
+        $this->add([
+            'name',
+            'value'
+        ]);
+
+        $input = [
+            [ 'name1' => 'sku', 'value' => 'ABC' ],
+            [ 'name' => 'catgeory', 'value2' => 'childrens books' ]
+        ];
+
+        $this->isValid($input);
+
+        $this->getMessages()->shouldReturn([
+            [ 'name1' => "Key 'name1' is not permitted" ],
+            [ 'value2' => "Key 'value2' is not permitted" ]
+        ]);
+    }
 }

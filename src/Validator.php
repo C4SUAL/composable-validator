@@ -8,22 +8,26 @@ class Validator
 
     private $messages = [];
 
+    /**
+     * @param $data
+     * @return bool
+     */
     public function isValid($data)
     {
         if (empty($data)) {
             return false;
         }
 
-        $loopValid = true;
-
         foreach($data as $key => $value) {
 
             if (is_array($value) && isset($this->rules[$key]) && $this->rules[$key] instanceof Validator) {
+                /**
+                 * @var Validator $validator
+                 */
                 $validator = $this->rules[$key];
                 $valid = $validator->isValid($value);
                 if (!$valid) {
                     $this->collectMessages($validator->getMessages(), $key);
-                    $loopValid = false;
                 }
                 continue;
             }
@@ -33,7 +37,6 @@ class Validator
                 $valid = $validator->isValid($value);
                 if (!$valid) {
                     $this->collectMessages($validator->getMessages(), $key);
-                    $loopValid = false;
                 }
                 continue;
             }
@@ -42,11 +45,10 @@ class Validator
 
             if (!$valid) {
                 $this->addMessage($key);
-                $loopValid = false;
             }
         }
 
-        return $loopValid;
+        return count($this->messages) === 0;
     }
 
     public function add($input)
@@ -68,6 +70,21 @@ class Validator
 
     private function collectMessages($arr, $key)
     {
-        $this->messages[$key] = $arr;
+        if (array_key_exists($key, $this->messages)) {
+            // a collection
+            $this->messages[$key][] = $arr;
+        } else {
+            $this->messages[$key] = $arr;
+        }
+    }
+
+    private function resetMessages()
+    {
+        $this->messages = [];
+    }
+
+    public function __clone()
+    {
+        $this->resetMessages();
     }
 }
