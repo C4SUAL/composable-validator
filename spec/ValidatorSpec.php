@@ -112,7 +112,7 @@ class ValidatorSpec extends ObjectBehavior
             'mixup'   => 3
         ]);
 
-        $this->getMessages()->shouldReturn([
+        $this->getNestedMessages()->shouldReturn([
             'invalid'=>"Key 'invalid' is not permitted",
             'mixup'  =>"Key 'mixup' is not permitted"
         ]);
@@ -143,7 +143,7 @@ class ValidatorSpec extends ObjectBehavior
 
         $this->isValid($input);
 
-        $this->getMessages()->shouldReturn([
+        $this->getNestedMessages()->shouldReturn([
             'start_date'=>"Key 'start_date' is not permitted",
             'meta_fields' => [
                 0 => [ 'foo' => "Key 'foo' is not permitted" ],
@@ -169,9 +169,42 @@ class ValidatorSpec extends ObjectBehavior
 
         $this->isValid($input);
 
-        $this->getMessages()->shouldReturn([
+        $this->getNestedMessages()->shouldReturn([
             [ 'name1' => "Key 'name1' is not permitted" ],
             [ 'value2' => "Key 'value2' is not permitted" ]
+        ]);
+    }
+
+    public function it_returns_messages_in_a_flat_array()
+    {
+        $meta_fields = new Validator();
+        $meta_fields->add([
+            'name',
+            'value'
+        ]);
+
+        $this->add([
+            'id',
+            'meta_fields' => $meta_fields
+        ]);
+
+        $input = [
+            'id' => 1,
+            'start_date' => '2018-06-29',
+            'meta_fields' => [
+                [ 'foo'  => 1, 'value' => 1 ],
+                [ 'name' => 1, 'value' => 1 ],
+                [ 'bar'  => 1, 'baz'   => 1 ]
+            ]
+        ];
+
+        $this->isValid($input);
+
+        $this->getMessages()->shouldReturn([
+            "Key 'start_date' is not permitted",
+            "Key 'meta_fields[0][foo]' is not permitted",
+            "Key 'meta_fields[2][bar]' is not permitted",
+            "Key 'meta_fields[2][baz]' is not permitted"
         ]);
     }
 }

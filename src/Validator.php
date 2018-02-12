@@ -27,7 +27,7 @@ class Validator
                 $validator = $this->rules[$key];
                 $valid = $validator->isValid($value);
                 if (!$valid) {
-                    $this->messages[$key] = $validator->getMessages();
+                    $this->messages[$key] = $validator->getNestedMessages();
                 }
                 continue;
             }
@@ -36,7 +36,7 @@ class Validator
                 $validator = clone $this;
                 $valid = $validator->isValid($value);
                 if (!$valid) {
-                    $this->messages[$key] = $validator->getMessages();
+                    $this->messages[$key] = $validator->getNestedMessages();
                 }
                 continue;
             }
@@ -58,9 +58,30 @@ class Validator
         }
     }
 
-    public function getMessages()
+    public function getNestedMessages()
     {
         return $this->messages;
+    }
+
+    public function getMessages()
+    {
+        return $this->_getMessages($this->messages, null);
+    }
+
+    private function _getMessages($messages, $parent)
+    {
+        $collect = [];
+        foreach($messages as $key => $message)
+        {
+            $key = ($parent === null) ? $key : $parent . '[' . $key . ']';
+
+            if (is_array($message)) {
+                $collect = array_merge($collect, $this->_getMessages($message, $key));
+                continue;
+            }
+            $collect[] = sprintf(self::INVALID_KEY_ERROR, $key);
+        }
+        return $collect;
     }
 
     private function addMessage($key)
