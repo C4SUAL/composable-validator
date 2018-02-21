@@ -1,0 +1,13 @@
+parameters:
+    git_dir: .
+    bin_dir: vendor/bin
+    tasks:
+        phpmd:
+            exclude: []
+            ruleset: ['cleancode', 'codesize', 'naming']
+            triggered_by: ['php']
+        phpspec:
+            config_file: ~
+            format: ~
+            stop_on_failure: false
+            verbose: false

@@ -20,23 +20,19 @@ class Validator
 
         foreach($data as $key => $value) {
 
-            if (is_array($value) && isset($this->rules[$key]) && $this->rules[$key] instanceof Validator) {
+            if (is_array($value)) {
+
                 /**
                  * @var Validator $validator
                  */
-                $validator = $this->rules[$key];
-                $valid = $validator->isValid($value);
-                if (!$valid) {
-                    $this->messages[$key] = $validator->getNestedMessages();
-                }
-                continue;
-            }
+                $validator = (isset($this->rules[$key]) && $this->rules[$key] instanceof Validator)
+                    ? $this->rules[$key]
+                    : clone $this;
 
-            if (is_array($value)) {
-                $validator = clone $this;
                 $valid = $validator->isValid($value);
+
                 if (!$valid) {
-                    $this->messages[$key] = $validator->getNestedMessages();
+                    $this->messages[$key] = $validator->getInvalidKeys();
                 }
                 continue;
             }
@@ -58,7 +54,7 @@ class Validator
         }
     }
 
-    public function getNestedMessages()
+    public function getInvalidKeys()
     {
         return $this->messages;
     }

@@ -112,7 +112,7 @@ class ValidatorSpec extends ObjectBehavior
             'mixup'   => 3
         ]);
 
-        $this->getNestedMessages()->shouldReturn([
+        $this->getInvalidKeys()->shouldReturn([
             'invalid'=>"Key 'invalid' is not permitted",
             'mixup'  =>"Key 'mixup' is not permitted"
         ]);
@@ -143,7 +143,7 @@ class ValidatorSpec extends ObjectBehavior
 
         $this->isValid($input);
 
-        $this->getNestedMessages()->shouldReturn([
+        $this->getInvalidKeys()->shouldReturn([
             'start_date'=>"Key 'start_date' is not permitted",
             'meta_fields' => [
                 0 => [ 'foo' => "Key 'foo' is not permitted" ],
@@ -169,7 +169,7 @@ class ValidatorSpec extends ObjectBehavior
 
         $this->isValid($input);
 
-        $this->getNestedMessages()->shouldReturn([
+        $this->getInvalidKeys()->shouldReturn([
             [ 'name1' => "Key 'name1' is not permitted" ],
             [ 'value2' => "Key 'value2' is not permitted" ]
         ]);

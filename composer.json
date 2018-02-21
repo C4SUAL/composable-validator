@@ -4,7 +4,9 @@
         "zendframework/zend-inputfilter": "^2.8"
     },
     "require-dev": {
-        "phpspec/phpspec": "^3.4"
+        "phpspec/phpspec": "^3.4",
+        "phpro/grumphp": "^0.13.1",
+        "phpmd/phpmd": "^2.6"
     },
     "config": {
         "bin-dir": "bin"
